@@ -21,7 +21,11 @@ module.exports = (function socketEvents() {
     // -------------------------------------------------------------------------------------------------- Public methods
 
     function onConnection(socket) {
-        showMessage('onAnonymousClientConnect', { socket : socket } );
+        showMessage('onConnect', { socket : socket } );
+
+        socket.on('disconnect', function onCustom(userData) {
+            showMessage('onDisconnect', { socket : socket, userData : userData } );
+        });
 
         socket.on('publish', function onCustom(userData) {
             showMessage('onPublish', { socket : socket, userData : userData } );
@@ -44,8 +48,28 @@ module.exports = (function socketEvents() {
         }
 
         switch(eventName) {
-            case 'onAnonymousClientConnect' :
-                message += 'An anonymous client has connected'; break;
+            case 'onConnect' :
+                if (showClientId) {
+                    message += 'Client (' + data.socket.id + ') ';
+                }
+                else {
+                    message += 'A client ';
+                }
+
+                message += 'has connected';
+                break;
+
+            case 'onDisconnect' :
+                if (showClientId) {
+                    message += 'Client (' + data.socket.id + ') ';
+                }
+                else {
+                    message += 'A client ';
+                }
+
+                message += 'has disconnected';
+                break;
+
             case 'onPublish' :
                 if (showClientId) {
                     message += 'Client (' + data.socket.id + ') ';
@@ -56,6 +80,7 @@ module.exports = (function socketEvents() {
 
                 message += 'has publish something';
                 break;
+
             default :
                 return;
         }
