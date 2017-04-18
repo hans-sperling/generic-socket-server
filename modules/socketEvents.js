@@ -21,20 +21,23 @@ module.exports = (function socketEvents() {
     // -------------------------------------------------------------------------------------------------- Public methods
 
     function onConnection(socket) {
-        showMessage('onAnonymousClientConnect');
+        showMessage('onAnonymousClientConnect', { socket : socket } );
 
-        socket.on('publish', function onCustom(data) {
-            showMessage('onPublish', socket, data);
+        socket.on('publish', function onCustom(userData) {
+            showMessage('onPublish', { socket : socket, userData : userData } );
         });
 
 
-        socket.emit('connected', { test : 'test' });
+        socket.emit('connected', {});
     }
 
     // -------------------------------------------------------------------------------------------------- Helper methods
 
-    function showMessage(eventName, socket, data) {
+    function showMessage(eventName, data) {
         var message = '';
+
+        data          = data || {};
+        data.userData = data.userData || {};
 
         if (showTimestamp) {
             message += timeHelper.getDateTimeString(' ') + separator;
@@ -45,7 +48,7 @@ module.exports = (function socketEvents() {
                 message += 'An anonymous client has connected'; break;
             case 'onPublish' :
                 if (showClientId) {
-                    message += 'Client (' + socket.id + ') ';
+                    message += 'Client (' + data.socket.id + ') ';
                 }
                 else {
                     message += 'A client ';
