@@ -2,13 +2,11 @@ module.exports = (function socketEvents() {
 
     // ---------------------------------------------------------------------------------------------------- Dependencies
 
-    var timeHelper = require('./timeHelper.js');
+    var messageHelper = require('./messageHelper.js');
 
     // ----------------------------------------------------------------------------------------------------- Preferences
 
-    var showTimestamp = true,
-        showClientId  = true,
-        separator     = ' => ';
+    // ...
 
     // -------------------------------------------------------------------------------------------------- Module methods
 
@@ -21,72 +19,28 @@ module.exports = (function socketEvents() {
     // -------------------------------------------------------------------------------------------------- Public methods
 
     function onConnection(socket) {
-        showMessage('onConnect', { socket : socket } );
+        messageHelper.show('onConnection', socket, {});
 
-        socket.on('disconnect', function onCustom(userData) {
-            showMessage('onDisconnect', { socket : socket, userData : userData } );
+        socket.on('disconnect', function onDisconnect(userData) {
+            messageHelper.show('onDisconnect', socket, userData );
         });
 
-        socket.on('publish', function onCustom(userData) {
-            showMessage('onPublish', { socket : socket, userData : userData } );
-        });
+        socket.on('publish', function onPublish(userData) {
+            messageHelper.show('onPublish', socket, userData);
 
+            socket.broadcast.emit('publish', userData);
+        });
 
         socket.emit('connected', {});
     }
 
+    // ------------------------------------------------------------------------------------------------- Private methods
+
+    // ...
+
     // -------------------------------------------------------------------------------------------------- Helper methods
 
-    function showMessage(eventName, data) {
-        var message = '';
-
-        data          = data || {};
-        data.userData = data.userData || {};
-
-        if (showTimestamp) {
-            message += timeHelper.getDateTimeString(' ') + separator;
-        }
-
-        switch(eventName) {
-            case 'onConnect' :
-                if (showClientId) {
-                    message += 'Client (' + data.socket.id + ') ';
-                }
-                else {
-                    message += 'A client ';
-                }
-
-                message += 'has connected';
-                break;
-
-            case 'onDisconnect' :
-                if (showClientId) {
-                    message += 'Client (' + data.socket.id + ') ';
-                }
-                else {
-                    message += 'A client ';
-                }
-
-                message += 'has disconnected';
-                break;
-
-            case 'onPublish' :
-                if (showClientId) {
-                    message += 'Client (' + data.socket.id + ') ';
-                }
-                else {
-                    message += 'A client ';
-                }
-
-                message += 'has publish something';
-                break;
-
-            default :
-                return;
-        }
-
-        console.log(message);
-    }
+    // ...
 
     // --------------------------------------------------------------------------------------------------- Init / Return
 

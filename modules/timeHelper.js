@@ -57,7 +57,7 @@ module.exports = (function timeHelper() {
         timeString.push(addZeros(d.getHours(),   10));
         timeString.push(addZeros(d.getMinutes(), 10));
         timeString.push(addZeros(d.getSeconds(), 10));
-        timeString.push(addZeros(d.getMilliseconds(), 1000));
+        timeString.push(addZeros(d.getMilliseconds(), 100));
 
         return timeString.join(separator);
     }

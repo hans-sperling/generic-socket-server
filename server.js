@@ -35,7 +35,7 @@ function init() {
 
 
 function showOnStartingServer() {
-    console.log('Starting server ...');
+    console.log('Try to start server ...');
 }
 
 
@@ -49,7 +49,7 @@ function showOnStartedServer() {
     }
 
     console.log(headerString);
-    console.log('Ports : ' + networkConfig.http.port + ' (http), ' + networkConfig.https.port + ' (https)\n\n');
+    console.log('Ports : ' + networkConfig.http.port + ' (http), ' + networkConfig.https.port + ' (https)\n');
     networkConfigHelper.showInterfaces(networkConfig);
     console.log(charHelper.getFillChar('-', headerString.length) + '\n');
 }
